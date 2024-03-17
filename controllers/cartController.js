@@ -124,3 +124,19 @@ exports.removeItem = async (req, res) => {
   }
   
 };
+
+exports.deleteCart =  async(req, res) => {
+
+  const userId = req.user._id
+    if (!userId){
+        res.status(400)
+        throw new Error('No such user Found')
+    }
+    try {
+      await Cart.updateMany({ userId: userId }, { $set: { products: [] } })
+      res.status(200).json({ message: 'Products removed from the cart successfully.' })
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' })
+    }
+
+}

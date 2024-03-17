@@ -60,6 +60,8 @@ createProduct = asyncHandler(async(req,res)=>{
     if (!title | !price){
         throw new Error('All are mandatory')
     }
+    if (title) req.body.slug = slugify(title)
+    
     const mergedData = {
         ...req.body,
         listedBy: userId
