@@ -38,19 +38,37 @@ getProduct = asyncHandler(async(req,res)=>{
     res.status(200).json(productAvailable)
 })
 
+//Get Seller Products
+getSellerProducts = asyncHandler(async(req,res)=>{
+    const userId = req.user._id
+    if (!userId){
+        res.status(400)
+        throw new Error('No such user Found')
+    }
+    const products = await Products.find({ listedBy: userId })
+    res.status(200).json(products)
+})
+
 //Create a Product - Only Admin can access
 createProduct = asyncHandler(async(req,res)=>{
+    const userId = req.user._id
+    if (!userId){
+        res.status(400)
+        throw new Error('No such user Found')
+    }
     const { title, price } = req.body
     if (!title | !price){
         throw new Error('All are mandatory')
     }
-    if (title) req.body.slug = slugify(title)
-    const product = await Products.create(req.body)
+    const mergedData = {
+        ...req.body,
+        listedBy: userId
+    }
+    const product = await Products.create(mergedData)
     res.status(201).json(product)
     
 
 })
-
 //Update a Product - Only Admin can access
 updateProduct = asyncHandler(async(req,res)=>{
     if (req.body.title) req.body.slug = slugify(req.body.title)

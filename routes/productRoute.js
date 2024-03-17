@@ -8,6 +8,8 @@ router.put('/rating', validateToken, rating)
 
 router.get('/', getProducts)
 
+router.get('/seller-prod', AdminAuth, getSellerProducts)
+
 router.post('/', AdminAuth, createProduct)
 
 router.get('/:id', getProduct)
